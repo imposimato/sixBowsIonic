@@ -1,39 +1,66 @@
-import { Component } from '@angular/core';
+import {Component, enableProdMode, OnInit} from '@angular/core';
 
-import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import {Platform} from '@ionic/angular';
+import {SplashScreen} from '@ionic-native/splash-screen/ngx';
+import {StatusBar} from '@ionic-native/status-bar/ngx';
+import {LokiJSService} from './services/loki-js.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html'
+    selector: 'app-root',
+    templateUrl: 'app.component.html'
 })
-export class AppComponent {
-  public appPages = [
-    {
-      title: 'Home',
-      url: '/home',
-      icon: 'home'
-    },
-    {
-      title: 'List',
-      url: '/list',
-      icon: 'list'
+export class AppComponent implements OnInit {
+
+    public appPages = [
+        {
+            title: 'Home',
+            url: '/home',
+            icon: 'home'
+        },
+        {
+            title: 'Categories',
+            url: '/categories',
+            icon: 'list'
+        },
+        {
+            title: 'Report',
+            url: '/report',
+            icon: 'clipboard'
+        },
+        {
+            title: 'Charts',
+            url: '/graphics',
+            icon: 'pie'
+        },
+        {
+            title: 'Options',
+            url: '/options',
+            icon: 'settings'
+        }
+    ];
+
+    constructor(
+        private loki: LokiJSService,
+        private platform: Platform,
+        private splashScreen: SplashScreen,
+        private statusBar: StatusBar) {
+
     }
-  ];
 
-  constructor(
-    private platform: Platform,
-    private splashScreen: SplashScreen,
-    private statusBar: StatusBar
-  ) {
-    this.initializeApp();
-  }
+    async ngOnInit() {
+        await this.initializeApp();
+    }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-    });
-  }
+    async initializeApp() {
+        await this.platform.ready();
+        await this.loki.initDB();
+        await this.statusBar.styleDefault();
+        await this.splashScreen.hide();
+        // this.platform.ready().then(() => {
+        //     this.statusBar.styleDefault();
+        //     this.loki.initDB().then(() => {
+        //         this.splashScreen.hide();
+        //     });
+        // });
+    }
 }
